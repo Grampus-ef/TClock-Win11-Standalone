@@ -1,0 +1,5 @@
+# Build outputs
+windows11-standalone/TClock11Standalone.exe
+windows11-standalone/*.obj
+windows11-standalone/*.pdb
+dist/
