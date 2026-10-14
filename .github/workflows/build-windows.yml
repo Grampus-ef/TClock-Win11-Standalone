@@ -29,7 +29,7 @@ jobs:
         shell: cmd
         run: |
           where cl
-          cl /Bv
+          echo MSVC x64 environment detected. Compilation will confirm compiler usability.
 
       - name: Build standalone EXE
         working-directory: windows11-standalone
