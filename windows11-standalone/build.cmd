@@ -7,7 +7,7 @@ if errorlevel 1 (
   exit /b 1
 )
 if exist "TClock11Standalone.exe" del /q "TClock11Standalone.exe"
-cl /nologo /std:c++17 /EHsc /W4 /DUNICODE /D_UNICODE /O2 /MT /utf-8 TClock11Standalone.cpp /link /SUBSYSTEM:WINDOWS /MACHINE:X64 /OUT:TClock11Standalone.exe user32.lib gdi32.lib shell32.lib iphlpapi.lib
+cl /nologo /std:c++17 /EHsc /W4 /O2 /MT /utf-8 TClock11Standalone.cpp /link /SUBSYSTEM:WINDOWS /MACHINE:X64 /OUT:TClock11Standalone.exe user32.lib gdi32.lib shell32.lib iphlpapi.lib
 if errorlevel 1 (
   echo ERROR: MSVC compilation or link failed.
   exit /b 1
