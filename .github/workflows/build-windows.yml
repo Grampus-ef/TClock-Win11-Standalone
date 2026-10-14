@@ -1,0 +1,61 @@
+name: Build TClock11 Standalone (x64)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build-windows.yml"
+      - "windows11-standalone/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: MSVC / Windows Server 2022 / x64
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Visual Studio 2022 MSVC x64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          vsversion: "2022"
+
+      - name: Check compiler environment
+        shell: cmd
+        run: |
+          where cl
+          cl /Bv
+
+      - name: Build standalone EXE
+        working-directory: windows11-standalone
+        shell: cmd
+        run: call build.cmd
+
+      - name: Verify x64 PE executable
+        shell: pwsh
+        run: ./windows11-standalone/verify-pe.ps1
+
+      - name: Package executable and config
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item windows11-standalone/TClock11Standalone.exe dist/
+          Copy-Item windows11-standalone/TClock11Standalone.ini dist/
+          Copy-Item windows11-standalone/README-ja.md dist/
+          Copy-Item LICENSE dist/
+          $hash = (Get-FileHash dist/TClock11Standalone.exe -Algorithm SHA256).Hash
+          "TClock11Standalone.exe SHA256: $hash" | Set-Content -Path dist/SHA256.txt
+
+      - name: Upload compiled EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: TClock11Standalone-Windows-x64-prototype
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
